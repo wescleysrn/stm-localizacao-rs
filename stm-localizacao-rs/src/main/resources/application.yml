@@ -1,0 +1,71 @@
+server:
+  port: ${RESOURCE-SERVER-PORT:8080}
+
+spring:
+  application:
+    name: Localização base IBGE REST API
+  datasource:
+    hikari:
+      pool-name: HikariCP
+      maximum-pool-size: ${SPRING_DATASOURCE_MAXIMUM_POOL_SIZE:20}
+      minimum-idle: ${SPRING_DATASOURCE_MINIMUM_IDLE:5}
+      connection-timeout: ${SPRING_DATASOURCE_CONNECTION_TIMEOUT:30000}
+      idle-timeout: ${SPRING_DATASOURCE_IDLE_TIMEOUT:600000}
+      max-lifetime: ${SPRING_DATASOURCE_MAX_LIFETIME:1800000}
+    driverClassName: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.h2.Driver}
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:db-localizacao;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:sa}
+  h2:
+    console:
+      enabled: ${SPRING_H2_CONSOLE_ENABLED:true}
+      path: /h2-console
+      settings:
+        web-allow-others: ${SPRING_H2_CONSOLE_WEB_ALLOW_OTHERS:true}
+  jpa:
+    properties:
+      hibernate:
+        dialect: ${SPRING_JPA_HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}
+        generate_statistics: ${SPRING_JPA_HIBERNATE_GENERATE_STATISTICS:true}
+        format_sql: ${SPRING_JPA_HIBERNATE_FORMAT_SQL:true}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
+  sql:
+    init:
+      mode: ${SPRING_SQL_INIT_MODE:always} # Força a execução dos scripts schema.sql e data.sql na inicialização
+
+logging:
+  level:
+    org:
+      springframework:
+        web: ${LOGGING_SPRING_WEB:INFO}
+        boot: ${LOGGING_SPRING_BOOT:INFO}
+        security: ${LOGGING_SPRING_SECURITY:INFO}
+        orm:
+          jpa: ${LOGGING_SPRING_ORM_JPA:INFO}
+      hibernate:
+        SQL: ${LOGGING_HIBERNATE_SQL:INFO}
+        stat: ${LOGGING_HIBERNATE_STAT:INFO}
+        type:
+          descriptor:
+            sql:
+              BasicBinder: ${LOGGING_HIBERNATE_SQL_PARAM:INFO}
+
+springdoc:
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED:true}
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:true}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${MONITORING_ENDPOINTS:health,metrics,info,prometheus}
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: ${MONITORING_PROMETHEUS:true}
